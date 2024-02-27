@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/grim13/go-rest-api/db"
@@ -14,9 +15,24 @@ func main() {
 	server := gin.Default()
 
 	server.GET("/events", getEvents) //GET, POST, PUT, PATCH, DELETE
+	server.GET("/events/:id", getEvent)
 	server.POST("/events", createEvent)
 
 	server.Run(":8080") //localhost:8080
+}
+
+func getEvent(context *gin.Context) {
+	eventId, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"messege": "Could not parsed event id."})
+		return
+	}
+	event, err := models.GetEventByID(eventId)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"messege": "Could not parsed event id."})
+		return
+	}
+	context.JSON(http.StatusOK, event)
 }
 
 func getEvents(context *gin.Context) {
