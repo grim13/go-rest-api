@@ -10,8 +10,8 @@ type User struct {
 	ID        int64     `json:"id"`
 	Email     string    `binding:"required" json:"email"`
 	Password  string    `binding:"required" json:"password"`
-	CreatedAt time.Time `binding:"required" json:"createdAt"`
-	UpdatedAt time.Time `binding:"required" json:"updatedAt"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 func (u *User) Save() error {
