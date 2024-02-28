@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/grim13/go-rest-api/models"
+	"github.com/grim13/go-rest-api/requests"
 )
 
 func singup(context *gin.Context) {
@@ -31,4 +32,32 @@ func singup(context *gin.Context) {
 	context.JSON(http.StatusCreated, gin.H{
 		"message": "User created successfully.",
 	})
+}
+
+func login(context *gin.Context) {
+	var req requests.Login
+	err := context.ShouldBindJSON(&req)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"message": "Could not parse request data.",
+			"err":     err,
+		})
+		return
+	}
+
+	user := models.User{
+		Email:    req.Email,
+		Password: req.Password,
+	}
+
+	err = user.ValidateCredentials()
+	if err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Authication Failed!",
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"messege": "Login Succesfull"})
+
 }

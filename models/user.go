@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/grim13/go-rest-api/db"
@@ -35,4 +36,18 @@ func (u *User) Save() error {
 	userId, err := result.LastInsertId()
 	u.ID = userId
 	return err
+}
+
+func (u User) ValidateCredentials() error {
+	query := "SELECT password FORM users where email = ?"
+	row := db.DB.QueryRow(query, u.Email)
+	var retrivedPassword string
+	err := row.Scan(&retrivedPassword)
+	if err != nil {
+		return errors.New("Credentials is invalid")
+	}
+	if !utils.CheckPasswordHash(u.Password, retrivedPassword) {
+		return errors.New("Credentials is invalid")
+	}
+	return nil
 }
