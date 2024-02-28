@@ -46,10 +46,10 @@ func createTables() {
 		description TEXT NOT NULL,
 		location TEXT NOT NULL,
 		dateTime DATETIME NOT NULL,
-		user_id INTEGER
-		FOREIGN KEY (user_id) REFERENCES users(id),
+		user_id INTEGER,
 		created_at DATETIME NOT NULL,
-		updated_at DATETIME NOT NULL
+		updated_at DATETIME NOT NULL,
+		FOREIGN KEY (user_id) REFERENCES users(id)
 	)
 	`
 
