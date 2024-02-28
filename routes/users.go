@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/grim13/go-rest-api/models"
 	"github.com/grim13/go-rest-api/requests"
+	"github.com/grim13/go-rest-api/utils"
 )
 
 func singup(context *gin.Context) {
@@ -58,6 +59,15 @@ func login(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"messege": "Login Succesfull"})
+	token, err := utils.GenerateToken(user.Email, user.ID)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"message": "Authication Failed!",
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"messege": "Login Succesfull", "token": token})
 
 }
